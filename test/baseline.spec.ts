@@ -38,32 +38,36 @@ async function testRunner(
     const code = await build(filename, extractCss, shadowMode)
 
     const page = await open(
-      fixture + (extractCss && !shadowMode ? '-extract' : '') + (shadowMode ? '-shadow' : ''),
+      fixture +
+        (extractCss && !shadowMode ? '-extract' : '') +
+        (shadowMode ? '-shadow' : ''),
       browser!,
       code,
       shadowMode
     )
-    
-    expect(await page.evaluate(
-      (shadowMode) => {
+
+    expect(
+      await page.evaluate(shadowMode => {
         return shadowMode
           ? !!document.getElementById('app')!.shadowRoot!.getElementById('test')
           : !!document.getElementById('test')
       }, shadowMode)
     ).toBeTruthy()
     expect(
-      await page.evaluate((shadowMode) => {
-        const context = shadowMode ? document.getElementById('app')!.shadowRoot! : document
+      await page.evaluate(shadowMode => {
+        const context = shadowMode
+          ? document.getElementById('app')!.shadowRoot!
+          : document
         return context.getElementById('test')!.textContent
       }, shadowMode)
     ).toEqual(expect.stringContaining('Hello'))
     expect(
-      await page.evaluate(
-        (shadowMode) => {
-          const context = shadowMode ? document.getElementById('app')!.shadowRoot! : document
-          return window.getComputedStyle(context.getElementById('test')!).color
-        }, shadowMode
-      )
+      await page.evaluate(shadowMode => {
+        const context = shadowMode
+          ? document.getElementById('app')!.shadowRoot!
+          : document
+        return window.getComputedStyle(context.getElementById('test')!).color
+      }, shadowMode)
     ).toEqual('rgb(255, 0, 0)')
 
     moreAssertions && moreAssertions(page)
@@ -71,7 +75,6 @@ async function testRunner(
     await page.close()
   } catch (error) {
     console.error({ error })
-    
 
     throw error
   }

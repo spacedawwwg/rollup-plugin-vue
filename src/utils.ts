@@ -116,9 +116,7 @@ export function resolveVuePart(
 
   if (!block)
     throw Error(
-      `Requested (type=${meta.type} & index=${
-        meta.index
-      }) block not found in ${filename}`
+      `Requested (type=${meta.type} & index=${meta.index}) block not found in ${filename}`
     )
 
   return block
